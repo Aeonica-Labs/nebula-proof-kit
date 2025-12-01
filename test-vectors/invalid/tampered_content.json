@@ -1,0 +1,22 @@
+{
+  "_test_description": "FAIL: Content was modified after signing (canonical_hash won't match)",
+  "_expected_error": "Canonical hash mismatch",
+  "proof_id": "a1b2c3d4e5f6a7b8a1b2c3d4e5f6a7b8",
+  "proof_type": "deletion",
+  "schema_version": "1.0.0",
+  "timestamp": "2025-01-15T10:30:00Z",
+  "data": {
+    "file_id": "550e8400-e29b-41d4-a716-446655440000",
+    "deletion_method": "cryptographic_erasure",
+    "tampered_field": "THIS WAS ADDED AFTER SIGNING"
+  },
+  "compliance": {
+    "gdpr_article": "17",
+    "recovery_impossible": true
+  },
+  "signature": {
+    "public_key": "YvzswcSbGdztT/OuRofz6DjOB/eazB6lz3LTLnyvaqQ=",
+    "canonical_hash": "a5a68fa72ecabf3861b0dbb24edf00fe4cf29f51a1a424432362ad681961966a",
+    "value": "J336VDzqx+fP5HcgiEe1URLhSoEvnfTy5PcVdF6ujmb57bdJnUlsx9RCYpCrzwV2GzwRcQHwy4GC31bDxu+3AQ=="
+  }
+}

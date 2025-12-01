@@ -1,0 +1,48 @@
+{
+  "name": "@nebula/proof-cli",
+  "version": "1.0.0",
+  "description": "CLI for verifying Nebula cryptographic proofs",
+  "bin": {
+    "nebula-proof": "./dist/index.js"
+  },
+  "main": "dist/index.js",
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsup src/index.ts --format cjs --dts",
+    "start": "node dist/index.js",
+    "dev": "tsx src/index.ts",
+    "test": "vitest"
+  },
+  "keywords": [
+    "nebula",
+    "proof",
+    "verification",
+    "cli",
+    "cryptography"
+  ],
+  "author": "Aeonica Labs <security@nebulaguard.net>",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Aeonica-Labs/nebula-proof-kit.git",
+    "directory": "cli"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "dependencies": {
+    "@nebula/proof-kit": "workspace:*",
+    "commander": "^11.1.0",
+    "chalk": "^5.3.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.0",
+    "tsup": "^8.0.0",
+    "tsx": "^4.6.0",
+    "typescript": "^5.3.0",
+    "vitest": "^1.0.0"
+  }
+}

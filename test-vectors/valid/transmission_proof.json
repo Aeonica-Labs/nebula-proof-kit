@@ -1,0 +1,64 @@
+{
+  "proof_id": "e9ede1dcd8ece0b4e9ede1dcd8ece0b4",
+  "proof_type": "transmission",
+  "schema_version": "1.0.0",
+  "timestamp": "2025-10-05T01:50:34.169494",
+  "algorithms": {
+    "canonicalization": "JCS",
+    "hash": "SHA-256",
+    "signature": "Ed25519",
+    "channel_binding": "TLS_Exporter:penst/v1"
+  },
+  "sender": {
+    "id": "did:web:sender.example.com",
+    "key_id": "0be573907d901404",
+    "pubkey": "PL7y0zgTtFFZ1qsARJuRg1qmyYS72nZP4sHz3erNnPM="
+  },
+  "receiver": {
+    "id": "did:web:receiver.example.net",
+    "key_id": "95c5e3dfdd51fc06",
+    "pubkey": "ipCDkxgbrm2/enZBtVCAU1zpwRtHdiI1uP435qpTeU8="
+  },
+  "channel": {
+    "protocol": "TLS1.3",
+    "cipher_suite": "TLS_AES_256_GCM_SHA384",
+    "perfect_forward_secrecy": true,
+    "channel_binding": "21c81c8da6ab0749ba1f90a5804bfa24c773a9581f7d20a1e7af2e8cc31b75e9"
+  },
+  "content": {
+    "mode": "file",
+    "payload_hash": "a57fbe4196f147026140e2bc1f87301813ee6dbbf3ecea8f8230abc5d980cd85",
+    "merkle_root": null,
+    "size_bytes": 62
+  },
+  "policy": {
+    "policy_digest": "483cce10167f800971d8c4f15347c83fc7e601de0789fd729161965dcad13120",
+    "residency_allowed": [
+      "us-east-1",
+      "eu-west-1"
+    ],
+    "path_policy": "direct_peering_only"
+  },
+  "path_attestation": {
+    "source_region": "us-east-1",
+    "destination_region": "eu-west-1",
+    "egress_ip_digest": "0c51dff28d8ba7b63f652a62f879316f0335e99a362ce130d8a803d836750171",
+    "ingress_ip_digest": "659d5b5ebde61f536adc1b8170d34c5e9cebd314bd27d585e3ed7bf46b1a2754",
+    "asn_path": [
+      "AS15169",
+      "AS3356",
+      "AS1299"
+    ]
+  },
+  "signature": {
+    "value": "b8IPAQZfCppjCorrfCaw/BLMGvBfP5vf1NkRKljP88AMJ66mKEnLsRrlWbjuLZnyjETySaYn6bo5OdLamEYIAg==",
+    "public_key": "PL7y0zgTtFFZ1qsARJuRg1qmyYS72nZP4sHz3erNnPM=",
+    "key_id": "0be573907d901404",
+    "canonical_hash": "2910ff896352cb62414cb89f2812e62fecc67ce0aadc6939427dca46cb73792c"
+  },
+  "acknowledgment": {
+    "timestamp": "2025-10-05T01:50:34.169853",
+    "payload_verified": true,
+    "receiver_signature": "X7L5kNL6kt4wscTR61alBTLxNKJkpi/FcXd01SVQ+qXUjgokpr6/JVmSnHRVUEGGKLDR+SNR2mjNEQ4PFug+Dg=="
+  }
+}

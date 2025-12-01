@@ -1,0 +1,245 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://nebulaguard.net/schemas/proof_bundle_v1.json",
+  "title": "Nebula Proof Bundle v1",
+  "description": "Cryptographic proof bundle for verifiable data operations",
+  "type": "object",
+  "required": ["version", "proof_type", "proof_id", "timestamp", "signature"],
+  "properties": {
+    "version": {
+      "type": "string",
+      "const": "nebula_proof_v1",
+      "description": "Schema version identifier"
+    },
+    "proof_type": {
+      "type": "string",
+      "enum": ["backup_integrity", "deletion", "residency", "transmission", "reconstruction"],
+      "description": "Type of proof"
+    },
+    "proof_id": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{32}$",
+      "description": "Unique proof identifier (32-char hex)"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 / RFC 3339 timestamp"
+    },
+    "schema_version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$",
+      "description": "Semantic version of proof schema"
+    },
+    "subject": {
+      "type": "object",
+      "description": "The object this proof is about",
+      "properties": {
+        "object_id": {
+          "type": "string",
+          "description": "Identifier of the proven object"
+        },
+        "object_hash": {
+          "type": "string",
+          "pattern": "^sha256:[a-f0-9]{64}$",
+          "description": "SHA-256 hash of object content"
+        },
+        "size_bytes": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Size of object in bytes"
+        }
+      }
+    },
+    "algorithms": {
+      "type": "object",
+      "description": "Cryptographic algorithms used",
+      "properties": {
+        "canonicalization": {
+          "type": "string",
+          "enum": ["JCS"],
+          "description": "JSON canonicalization scheme (RFC 8785)"
+        },
+        "hash": {
+          "type": "string",
+          "enum": ["SHA-256"],
+          "description": "Hash algorithm (FIPS 180-4)"
+        },
+        "signature": {
+          "type": "string",
+          "enum": ["Ed25519"],
+          "description": "Signature algorithm (RFC 8032)"
+        },
+        "merkle": {
+          "type": "object",
+          "properties": {
+            "hash": {
+              "type": "string",
+              "enum": ["SHA-256"]
+            },
+            "leaf_encoding": {
+              "type": "string",
+              "enum": ["utf-8"]
+            },
+            "pad_mode": {
+              "type": "string",
+              "enum": ["power_of_two_duplicate_last"]
+            },
+            "concat_order": {
+              "type": "string",
+              "enum": ["left||right"]
+            }
+          }
+        }
+      }
+    },
+    "merkle": {
+      "type": "object",
+      "description": "Merkle tree proof data",
+      "properties": {
+        "root": {
+          "type": "string",
+          "pattern": "^sha256:[a-f0-9]{64}$",
+          "description": "Merkle tree root hash"
+        },
+        "algorithm": {
+          "type": "string",
+          "enum": ["sha256"]
+        },
+        "leaf_count": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Number of leaves in tree"
+        },
+        "inclusion_proof": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^sha256:[a-f0-9]{64}$"
+          },
+          "description": "Sibling hashes for inclusion proof"
+        }
+      }
+    },
+    "attestations": {
+      "type": "array",
+      "description": "Node attestations for distributed storage",
+      "items": {
+        "type": "object",
+        "properties": {
+          "node_id": {
+            "type": "string",
+            "description": "Storage node identifier"
+          },
+          "region": {
+            "type": "string",
+            "description": "Geographic region (e.g., us-east-1)"
+          },
+          "shard_hash": {
+            "type": "string",
+            "pattern": "^sha256:[a-f0-9]{64}$",
+            "description": "Hash of shard stored on this node"
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "signature": {
+            "type": "string",
+            "description": "Node's signature over attestation"
+          }
+        }
+      }
+    },
+    "compliance": {
+      "type": "object",
+      "description": "Compliance-specific fields",
+      "properties": {
+        "gdpr_article": {
+          "type": "string",
+          "description": "Applicable GDPR article (e.g., '17' for deletion)"
+        },
+        "recovery_impossible": {
+          "type": "boolean",
+          "description": "True if data cannot be recovered (deletion proofs)"
+        },
+        "keys_destroyed": {
+          "type": "boolean",
+          "description": "True if encryption keys were destroyed"
+        },
+        "backups_deleted": {
+          "type": "boolean",
+          "description": "True if all backups were deleted"
+        },
+        "sanitization_standard": {
+          "type": "string",
+          "enum": ["NIST-SP-800-88-Rev1"],
+          "description": "Media sanitization standard followed"
+        },
+        "residency_respected": {
+          "type": "boolean",
+          "description": "True if data residency requirements met"
+        }
+      }
+    },
+    "anchoring": {
+      "type": "object",
+      "description": "Blockchain anchoring information (optional)",
+      "properties": {
+        "chain": {
+          "type": "string",
+          "description": "Blockchain identifier (e.g., 'polygon', 'ethereum')"
+        },
+        "tx_hash": {
+          "type": "string",
+          "pattern": "^0x[a-f0-9]{64}$",
+          "description": "Transaction hash containing anchor"
+        },
+        "block_height": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Block number"
+        },
+        "anchor_timestamp": {
+          "type": "string",
+          "format": "date-time",
+          "description": "When anchor was confirmed"
+        }
+      }
+    },
+    "signature": {
+      "type": "object",
+      "description": "Ed25519 signature over proof content",
+      "required": ["algorithm", "public_key", "value", "canonical_hash"],
+      "properties": {
+        "algorithm": {
+          "type": "string",
+          "enum": ["ed25519"]
+        },
+        "public_key": {
+          "type": "string",
+          "description": "Base64-encoded 32-byte Ed25519 public key"
+        },
+        "value": {
+          "type": "string",
+          "description": "Base64-encoded 64-byte Ed25519 signature"
+        },
+        "key_id": {
+          "type": "string",
+          "description": "Key identifier for key rotation tracking"
+        },
+        "canonical_hash": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$",
+          "description": "SHA-256 hash of canonical JSON (excluding signature)"
+        }
+      }
+    },
+    "bundle_hash": {
+      "type": "string",
+      "pattern": "^sha256:[a-f0-9]{64}$",
+      "description": "Hash of entire bundle for integrity"
+    }
+  },
+  "additionalProperties": true
+}

@@ -1,0 +1,64 @@
+{
+  "proof_id": "39c074f1858b6960a101ec71fe724eb4",
+  "proof_type": "deletion",
+  "file_id": "test_file_canonical_001",
+  "timestamp": "2025-10-05T01:50:34.168719",
+  "schema_version": "2.0.0",
+  "algorithms": {
+    "canonicalization": "JCS",
+    "hash": "SHA-256",
+    "signature": "Ed25519",
+    "merkle": {
+      "hash": "SHA-256",
+      "leaf_encoding": "utf-8",
+      "pad_mode": "power_of_two_duplicate_last",
+      "concat_order": "left||right",
+      "leaf_sort_key": "region.asc"
+    }
+  },
+  "key_management": {
+    "signer_key_id": "04b28321c9cf1e04",
+    "rotation_policy": "quarterly",
+    "revocation_endpoint": "https://api.nebula.storage/keys/crl.json"
+  },
+  "pre_deletion_hash": "22d70bda9e6e63ca2638e8ef7b1f1df19e8457c8df9bbd8b757126d0cd6de32e",
+  "total_shards": 3,
+  "deleted_shards": 3,
+  "deletion_confirmations": {
+    "eu-west-1": "265fc601d86b4ac99652b6fa32b4500129f133963620d0c61705855f4de43ea6",
+    "us-east-1": "87ea4e543ede3749dca69fb4ba1e6e2a373b70a45bcb4b4bb7d445021b357a59",
+    "us-west-2": "f58c79e9ace38fd65d06bfc2c870d1b84d21e1472c2e765d897b69c5492a12cd"
+  },
+  "post_deletion_hash": "c85ea82ab5762d98c74b667670f80534f376f6aabddbf4d1eb362fad942fdca9",
+  "all_deleted": true,
+  "compliance": {
+    "gdpr_article": "17",
+    "holds_present": false,
+    "primaries_deleted": true,
+    "backups_deleted": true,
+    "keys_destroyed": false,
+    "residency_respected": true,
+    "sanitization_standard": "NIST-SP-800-88-Rev1",
+    "recovery_impossible": true
+  },
+  "gdpr_compliant": true,
+  "deletion_method": "permanent",
+  "deletion_certificate": "6cf8190cdadef00aad6be5ea60d8c0185135dafc343a0fc6671c8981421fcf54",
+  "signature": {
+    "signature": "J336VDzqx+fP5HcgiEe1URLhSoEvnfTy5PcVdF6ujmb57bdJnUlsx9RCYpCrzwV2GzwRcQHwy4GC31bDxu+3AQ==",
+    "public_key": "YvzswcSbGdztT/OuRofz6DjOB/eazB6lz3LTLnyvaqQ=",
+    "key_id": "04b28321c9cf1e04",
+    "canonical_hash": "a5a68fa72ecabf3861b0dbb24edf00fe4cf29f51a1a424432362ad681961966a"
+  },
+  "kms_attestation": {
+    "key_id": "test_kms_key_001",
+    "destruction_confirmed": true,
+    "destruction_timestamp": "2025-10-05T12:00:00Z",
+    "keys_destroyed": true
+  },
+  "backup_attestations": {
+    "cold_storage_deleted": true,
+    "backup_count": 3,
+    "attestation_timestamp": "2025-10-05T12:00:01Z"
+  }
+}

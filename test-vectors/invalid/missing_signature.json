@@ -1,0 +1,16 @@
+{
+  "_test_description": "FAIL: Missing signature block entirely",
+  "_expected_error": "Missing required field: signature",
+  "proof_id": "a1b2c3d4e5f6a7b8a1b2c3d4e5f6a7b8",
+  "proof_type": "deletion",
+  "schema_version": "1.0.0",
+  "timestamp": "2025-01-15T10:30:00Z",
+  "data": {
+    "file_id": "550e8400-e29b-41d4-a716-446655440000",
+    "deletion_method": "cryptographic_erasure"
+  },
+  "compliance": {
+    "gdpr_article": "17",
+    "recovery_impossible": true
+  }
+}

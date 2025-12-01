@@ -1,0 +1,21 @@
+{
+  "_test_description": "FAIL: transmission proof missing required receiver object",
+  "_expected_error": "Transmission proofs must have receiver object",
+  "proof_id": "a1b2c3d4e5f6a7b8a1b2c3d4e5f6a7b8",
+  "proof_type": "transmission",
+  "schema_version": "1.0.0",
+  "timestamp": "2025-01-15T10:30:00Z",
+  "sender": {
+    "id": "did:web:sender.example.com",
+    "key_id": "0be573907d901404"
+  },
+  "channel": {
+    "protocol": "TLS1.3",
+    "perfect_forward_secrecy": true
+  },
+  "signature": {
+    "public_key": "PL7y0zgTtFFZ1qsARJuRg1qmyYS72nZP4sHz3erNnPM=",
+    "canonical_hash": "2910ff896352cb62414cb89f2812e62fecc67ce0aadc6939427dca46cb73792c",
+    "value": "b8IPAQZfCppjCorrfCaw/BLMGvBfP5vf1NkRKljP88AMJ66mKEnLsRrlWbjuLZnyjETySaYn6bo5OdLamEYIAg=="
+  }
+}

@@ -1,0 +1,77 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "nebula-proof-kit"
+version = "1.0.0"
+description = "Verification toolkit for Nebula cryptographic proofs"
+readme = "README.md"
+license = "Apache-2.0"
+requires-python = ">=3.9"
+authors = [
+    { name = "Aeonica Labs", email = "security@nebulaguard.net" }
+]
+keywords = [
+    "cryptography",
+    "proofs",
+    "verification",
+    "merkle",
+    "ed25519",
+    "compliance",
+    "gdpr"
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: Apache Software License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Security :: Cryptography",
+]
+
+dependencies = []
+
+[project.optional-dependencies]
+crypto = ["cryptography>=41.0.0"]
+cli = ["click>=8.0.0", "rich>=13.0.0"]
+dev = [
+    "pytest>=7.0.0",
+    "pytest-cov>=4.0.0",
+    "black>=23.0.0",
+    "mypy>=1.0.0",
+    "ruff>=0.1.0",
+]
+all = ["nebula-proof-kit[crypto,cli,dev]"]
+
+[project.scripts]
+nebula-proof = "nebula_proof.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/Aeonica-Labs/nebula-proof-kit"
+Documentation = "https://docs.nebulaguard.net/proofs"
+Repository = "https://github.com/Aeonica-Labs/nebula-proof-kit"
+Issues = "https://github.com/Aeonica-Labs/nebula-proof-kit/issues"
+
+[tool.hatch.build.targets.wheel]
+packages = ["nebula_proof"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+
+[tool.black]
+line-length = 100
+target-version = ["py39", "py310", "py311", "py312"]
+
+[tool.ruff]
+line-length = 100
+select = ["E", "F", "I", "N", "W"]
+
+[tool.mypy]
+python_version = "3.9"
+strict = true
