@@ -26,7 +26,7 @@ export async function verifyProof(
 ): Promise<VerificationResult> {
   const result: VerificationResult = {
     valid: false,
-    proofType: (proof.proof_type as string) || null,
+    proofType: (proof.proof_type as VerificationResult['proofType']) || null,
     proofId: (proof.proof_id as string) || null,
     checks: [],
     errors: [],

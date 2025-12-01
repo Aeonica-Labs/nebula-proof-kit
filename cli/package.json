@@ -14,7 +14,7 @@
     "build": "tsup src/index.ts --format cjs --dts",
     "start": "node dist/index.js",
     "dev": "tsx src/index.ts",
-    "test": "vitest"
+    "test": "vitest run"
   },
   "keywords": [
     "nebula",
@@ -34,9 +34,9 @@
     "node": ">=18.0.0"
   },
   "dependencies": {
-    "@nebula/proof-kit": "workspace:*",
+    "@nebula/proof-kit": "file:../packages/typescript",
     "commander": "^11.1.0",
-    "chalk": "^5.3.0"
+    "chalk": "^4.1.2"
   },
   "devDependencies": {
     "@types/node": "^20.10.0",
