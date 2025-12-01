@@ -4,7 +4,7 @@
  * Main verification functions for validating cryptographic proofs.
  */
 
-import { sha256Hex, canonicalJson, verifyEd25519 } from './crypto';
+import { sha256, sha256Hex, canonicalJson, verifyEd25519, base64ToBytes, arrayEquals } from './crypto';
 import { validateSchema, ProofType } from './schemas';
 import type {
   ProofBundle,
@@ -196,34 +196,109 @@ export async function verifySignature(
 
 /**
  * Verify Merkle tree inclusion proof.
+ *
+ * Recomputes the Merkle root from the leaf hash and inclusion proof,
+ * then compares against the declared root.
  */
-export function verifyMerkleInclusion(
+export async function verifyMerkleInclusion(
   proof: ProofBundle,
-  _leafHash: string,
-  _leafIndex: number
-): VerificationCheck {
+  leafHash: string,
+  leafIndex: number
+): Promise<VerificationCheck> {
   const merkle = proof.merkle;
-  const root = merkle?.root || '';
+  const declaredRoot = merkle?.root || '';
   const inclusionProof = merkle?.inclusion_proof || [];
 
-  if (!root || inclusionProof.length === 0) {
+  if (!declaredRoot) {
     return {
       name: 'merkle_inclusion',
       passed: false,
-      message: 'Missing Merkle root or inclusion proof',
+      message: 'Missing Merkle root',
     };
   }
 
-  // Structure validation only for now
-  return {
-    name: 'merkle_inclusion',
-    passed: true,
-    message: 'Merkle inclusion proof structure valid',
-    details: {
-      root: root.length > 32 ? root.substring(0, 32) + '...' : root,
-      proof_length: inclusionProof.length,
-    },
-  };
+  if (!leafHash) {
+    return {
+      name: 'merkle_inclusion',
+      passed: false,
+      message: 'Missing leaf hash for verification',
+    };
+  }
+
+  if (inclusionProof.length === 0) {
+    // Single leaf tree - leaf hash should equal root
+    const passed = leafHash === declaredRoot;
+    return {
+      name: 'merkle_inclusion',
+      passed,
+      message: passed ? 'Single-leaf Merkle tree verified' : 'Leaf hash does not match root',
+    };
+  }
+
+  try {
+    // Convert hex strings to bytes
+    let current = hexToBytes(leafHash);
+    let index = leafIndex;
+
+    // Walk up the tree using the inclusion proof
+    for (const siblingHex of inclusionProof) {
+      const sibling = hexToBytes(siblingHex);
+      const combined = new Uint8Array(current.length + sibling.length);
+
+      if (index % 2 === 0) {
+        // Current is left child
+        combined.set(current, 0);
+        combined.set(sibling, current.length);
+      } else {
+        // Current is right child
+        combined.set(sibling, 0);
+        combined.set(current, sibling.length);
+      }
+
+      current = await sha256(combined);
+      index = Math.floor(index / 2);
+    }
+
+    // Compare computed root with declared root
+    const computedRootHex = bytesToHex(current);
+    const passed = computedRootHex === declaredRoot;
+
+    return {
+      name: 'merkle_inclusion',
+      passed,
+      message: passed
+        ? 'Merkle inclusion proof verified'
+        : 'Merkle root mismatch - inclusion proof invalid',
+      details: {
+        declared_root: declaredRoot.substring(0, 32) + '...',
+        computed_root: computedRootHex.substring(0, 32) + '...',
+        proof_length: inclusionProof.length,
+        leaf_index: leafIndex,
+      },
+    };
+  } catch (e) {
+    return {
+      name: 'merkle_inclusion',
+      passed: false,
+      message: `Merkle verification error: ${e}`,
+    };
+  }
+}
+
+// Helper: hex string to bytes
+function hexToBytes(hex: string): Uint8Array {
+  const bytes = new Uint8Array(hex.length / 2);
+  for (let i = 0; i < hex.length; i += 2) {
+    bytes[i / 2] = parseInt(hex.substring(i, i + 2), 16);
+  }
+  return bytes;
+}
+
+// Helper: bytes to hex string
+function bytesToHex(bytes: Uint8Array): string {
+  return Array.from(bytes)
+    .map((b) => b.toString(16).padStart(2, '0'))
+    .join('');
 }
 
 function verifyDeletionCompliance(proof: ProofBundle): VerificationCheck[] {

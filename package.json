@@ -1,0 +1,20 @@
+{
+  "name": "nebula-proof-kit-monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Open-source verification toolkit for Nebula cryptographic proofs",
+  "workspaces": [
+    "packages/typescript",
+    "cli"
+  ],
+  "scripts": {
+    "build": "npm run build --workspaces",
+    "test": "npm run test --workspaces --if-present",
+    "lint": "npm run lint --workspaces --if-present"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Aeonica-Labs/nebula-proof-kit.git"
+  },
+  "license": "Apache-2.0"
+}

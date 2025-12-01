@@ -8,7 +8,7 @@ import base64
 from typing import Dict, Any, List, Optional
 from dataclasses import dataclass, field
 
-from .crypto import sha256_hex, canonical_json, verify_ed25519
+from .crypto import sha256, sha256_hex, canonical_json, verify_ed25519
 from .schemas import validate_schema, ProofType
 
 
@@ -237,36 +237,83 @@ def verify_merkle_inclusion(
     """
     Verify Merkle tree inclusion proof.
 
+    Recomputes the Merkle root from the leaf hash and inclusion proof,
+    then compares against the declared root.
+
     Args:
         proof: Proof bundle dictionary
-        leaf_hash: Hash of leaf to verify
+        leaf_hash: Hash of leaf to verify (hex string)
         leaf_index: Index of leaf in tree
 
     Returns:
         VerificationCheck result
     """
     merkle = proof.get("merkle", {})
-    root = merkle.get("root", "")
+    declared_root = merkle.get("root", "")
     inclusion_proof = merkle.get("inclusion_proof", [])
 
-    if not root or not inclusion_proof:
+    if not declared_root:
         return VerificationCheck(
             name="merkle_inclusion",
             passed=False,
-            message="Missing Merkle root or inclusion proof"
+            message="Missing Merkle root"
         )
 
-    # This would need the actual merkle verification logic
-    # For now, just validate structure
-    return VerificationCheck(
-        name="merkle_inclusion",
-        passed=True,
-        message="Merkle inclusion proof structure valid",
-        details={
-            "root": root[:32] + "..." if len(root) > 32 else root,
-            "proof_length": len(inclusion_proof)
-        }
-    )
+    if not leaf_hash:
+        return VerificationCheck(
+            name="merkle_inclusion",
+            passed=False,
+            message="Missing leaf hash for verification"
+        )
+
+    if not inclusion_proof:
+        # Single leaf tree - leaf hash should equal root
+        passed = leaf_hash == declared_root
+        return VerificationCheck(
+            name="merkle_inclusion",
+            passed=passed,
+            message="Single-leaf Merkle tree verified" if passed else "Leaf hash does not match root"
+        )
+
+    try:
+        # Convert hex to bytes and walk up the tree
+        current = bytes.fromhex(leaf_hash)
+        index = leaf_index
+
+        for sibling_hex in inclusion_proof:
+            sibling = bytes.fromhex(sibling_hex)
+
+            if index % 2 == 0:
+                # Current is left child
+                combined = current + sibling
+            else:
+                # Current is right child
+                combined = sibling + current
+
+            current = sha256(combined)
+            index = index // 2
+
+        # Compare computed root with declared root
+        computed_root_hex = current.hex()
+        passed = computed_root_hex == declared_root
+
+        return VerificationCheck(
+            name="merkle_inclusion",
+            passed=passed,
+            message="Merkle inclusion proof verified" if passed else "Merkle root mismatch - inclusion proof invalid",
+            details={
+                "declared_root": declared_root[:32] + "..." if len(declared_root) > 32 else declared_root,
+                "computed_root": computed_root_hex[:32] + "...",
+                "proof_length": len(inclusion_proof),
+                "leaf_index": leaf_index
+            }
+        )
+    except Exception as e:
+        return VerificationCheck(
+            name="merkle_inclusion",
+            passed=False,
+            message=f"Merkle verification error: {e}"
+        )
 
 
 def _verify_deletion_compliance(proof: Dict[str, Any]) -> List[VerificationCheck]:
